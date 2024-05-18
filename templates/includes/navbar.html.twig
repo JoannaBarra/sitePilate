@@ -1,0 +1,54 @@
+<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ path('app_home') }}">Clara Pilates</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarColor01">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ path('app_home') }}">Home
+            <span class="visually-hidden">(current)</span>
+          </a>
+        </li>
+        {% if app.user is empty %}
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ path('app_login') }}">Connexion
+            <span class="visually-hidden">(current)</span>
+          </a>
+          {% else %}
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ path('app_logout') }}">Déconnexion
+            <span class="visually-hidden">(current)</span>
+          </a>
+        </li>
+        {% endif    %}
+   
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ path('app_register') }}">S'inscrire
+            <span class="visually-hidden">(current)</span>
+          </a>
+        </li> 
+     
+        <li class="nav-item">
+          <a class="nav-link " href="{{ path('app_reservation_index') }}">Reserver
+            
+          </a>
+        </li>
+  {% if app.user is not empty and is_granted('ROLE_ADMIN_APPLI')%}
+          <li class="nav-item">
+          <a class="nav-link" href="{{ path('app_user_index') }}">Les utilisateurs</a>
+        </li>
+       {% endif %}
+  
+          <li class="nav-item">
+          <a class="nav-link" href="{{ path('app_cours_calendar') }}">Cours</a>
+        </li>
+      
+          {# <li class="nav-item">
+          <a class="nav-link" href="{{ path('app_cours_index') }}">Cours</a>
+        </li> #}
+   
+
+         </nav>
