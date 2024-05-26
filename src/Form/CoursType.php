@@ -19,9 +19,7 @@ class CoursType extends AbstractType
                 'date_widget' => 'single_text',
             ])
             
-            ->add('end', null, [
-                'date_widget' => 'single_text',
-            ])
+           
             ->add('description')
             ->add('placesDispo')
             ->add('backgroundColor', ColorType::class)

@@ -43,6 +43,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'user', cascade:['persist'])]
     private Collection $reservations;
 
+    #[ORM\Column(length: 255)]
+    private ?string $telephone = null;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
@@ -155,6 +158,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $reservation->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
+
+    public function setTelephone(string $telephone): static
+    {
+        $this->telephone = $telephone;
 
         return $this;
     }

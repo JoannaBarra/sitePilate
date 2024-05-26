@@ -17,14 +17,20 @@ class ReservationType extends AbstractType
         $builder
             ->add('dateResa', null, [
                 'widget' => 'single_text',
+                'disabled' => true,
             ])
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'username',
-            ])
+        
             ->add('cour', EntityType::class, [
                 'class' => Cours::class,
                 'choice_label' => 'title',
+                'disabled' => true,
+               
+
+            ])  
+            ->add('user', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'username',
+                'disabled' => true,
 
                 
                 

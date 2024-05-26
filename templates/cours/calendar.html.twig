@@ -1,103 +1,65 @@
-{# templates/booking/calendar.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block body %}
-{% if app.user is not empty and is_granted('ROLE_ADMIN_APPLI') %}
-    <a href="{{ path('app_cours_new') }}">Créer un nouveau cours</a>
-    
-{% endif %}
+    {% if app.user is not empty and is_granted('ROLE_ADMIN_APPLI') %}
+        <a href="{{ path('app_cours_new') }}">Créer un nouveau cours</a>
+    {% endif %}
     <div id="calendar-holder"></div>
-      <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="eventTitle">Cours:</h2>
-            <p id="eventDescription">Détails:</p>
-            <p id="eventPlacesDispo">Places Disponibles:</p>
-            <a id="eventLink" href="#" class="btn btn-primary">Réserver</a>
-          
-        </div>
+    <style>
+       .passed {
+            opacity: 0.5; /* Par exemple, réduire l'opacité pour les événements passés */
+           text-decoration: line-through;
+        }
+        .disable-link {
+            pointer-events: none; /* Désactiver les liens pour les événements passés */
+            cursor: default;
+        }</style>
 {% endblock %}
 
 {% block javascripts %}
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
-        var userId = "{{ app.user.id ?? null }}";
-      var dateCours = document.getElementById("dateCours");
-
-
         document.addEventListener('DOMContentLoaded', () => {
             var calendarEl = document.getElementById('calendar-holder');
-           // var isProfesseur = {{ isProfesseur ? 'true' : 'false' }}
-           // var editable = {{ isProfesseur ? 'true' : 'false' }}//
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                defaultView: 'timeGridWeek',
+                initialView: 'dayGridMonth',
                 editable: false,
-                // je l'ai mis en false pour que l'user ne puisse pas deplacer le cours.
-                eventSources: [
-                    {
-                        url: "{{ path('fc_load_events') }}",
-                        method: "POST", jijijij
-                        extraParams: {
-                            filters: JSON.stringify({})
-                        },
-                        failure: () => {
-                            // alert("There was an error while fetching FullCalendar!");
-                        },
-                    },
-                ],
+                events: {{ data|raw }}, // Utilisez les données des événements fournies par Symfony
                 locale: 'fr',
                 headerToolbar: {
                     start: 'prev,next today',
                     center: 'title',
                     end: 'dayGridMonth,timeGridWeek,timeGridDay',
                 },
-                events: {{ data|raw }},
-            });
+  eventClick: function(info) {
+    var currentDate = new Date();
+    if (info.event.start < currentDate) {
+        // Si la date de début de l'événement est antérieure à la date actuelle, empêchez l'action par défaut
+        return false;
+    } 
 
-            calendar.on('eventChange', (e) => {
-                let url = `/api/${e.event.id}/edit`;
-                let donnees = {
-                    "id": e.event.id,
-                    "start": e.event.start,
-                    "end": e.event.end,         
-                };
-                let xhr = new XMLHttpRequest();
-                xhr.open('PUT', url);
-                console.log(JSON.stringify(donnees));
-                xhr.send(JSON.stringify(donnees));
-            });
+  
 
-           calendar.on('eventClick', (info) => {
-            if (donnees < dateCours){
-            event.preventDefault()
-            } 
-                if (!userId) {
-                    // Rediriger vers la page de connexion ou d'inscription
-                    window.location.href = "{{ path('app_login') }}"; // Rediriger vers la page de connexion
-                    {# window.location.href = "{{ path('app_register') }}"; // Rediriger vers la page d'inscription #}
-                } else {
-                    $('#eventTitle').text(info.event.title);
-                    $('#eventDescription').text(info.event.extendedProps.description);
-                    $('#eventPlacesDispo').text(info.event.extendedProps.placesDispo);
-                    $('#eventLink').attr('href', '/reservation/' + info.event.id);
-                    $('#myModal').show();
-                }
-            });
 
-            calendar.render(); 
-        });
-
-        
-        $(document).on('click', '.close', () => {
-            $('#myModal').hide();
-        });
-
- 
-        $(document).on('click', (e) => {
-            if (e.target.id === 'myModal') {
-                $('#myModal').hide();
+            
+                    if (!{{ app.user ? 'true' : 'false' }}) {
+                        window.location.href = "{{ path('app_login') }}";
+                    } else {
+                        var coursId = info.event.id;
+                        window.location.href = "/reservation/new?coursId=" + coursId;
+                    }
+                },
+                   eventDidMount: function(info) {
+            var currentDate = new Date();
+            if (info.event.start < currentDate) {
+                info.el.classList.add('passed');
+               
             }
+        }
+            });
+
+            calendar.render();
         });
     </script>
-{%  endblock %}
+{% endblock %}

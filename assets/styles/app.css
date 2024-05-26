@@ -1,3 +1,11 @@
 .fc-daygrid-day-events {
   cursor: pointer;
 }
+.passed {
+  opacity: 0.5; /* Par exemple, réduire l'opacité pour les événements passés */
+  text-decoration: line-through;
+}
+.disable-link {
+  pointer-events: none; /* Désactiver les liens pour les événements passés */
+  cursor: default;
+}

@@ -22,8 +22,7 @@ class Cours
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $start = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $end = null;
+    
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
@@ -44,6 +43,8 @@ class Cours
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'cour', cascade:['persist'])]
     private Collection $reservations;
+
+   
 
     public function __construct()
     {
@@ -79,17 +80,7 @@ class Cours
         return $this;
     }
 
-    public function getEnd(): ?\DateTimeInterface
-    {
-        return $this->end;
-    }
-
-    public function setEnd(\DateTimeInterface $end): static
-    {
-        $this->end = $end;
-
-        return $this;
-    }
+    
 
     public function getDescription(): ?string
     {
@@ -172,4 +163,8 @@ class Cours
 
         return $this;
     }
+
+ 
+
+   
 }

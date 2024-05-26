@@ -1,18 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Reservation{% endblock %}
+
+
 
 {% block body %}
-    <h1>Nouvelle réservation</h1>
 
-{% for message in app.flashes('info') %}
-<div class="alert alert-success">
+    <h1>Nouvelle Réservation</h1>
+    {% for message in app.flashes('error') %}
+<div class="alert alert-danger">
 {{message}}
 </div>
 {% endfor %}
-    
-
-    {{ include('reservation/_form.html.twig') }}
-
-    <a href="{{ path('app_reservation_index') }}">Retour</a>
+    {{ form_start(form) }}
+        {% if coursId is defined %}
+            {# Me sert a preremplir les champs pour que l'user n'ai pas a le refaire #}
+            {{ form_row(form.cour, { 'value': coursId}) }}
+        {% endif %}
+        {{ form_widget(form) }}
+        <button class="btn">{{ button_label|default('Réserver ce cours') }}</button>
+    {{ form_end(form) }}
 {% endblock %}

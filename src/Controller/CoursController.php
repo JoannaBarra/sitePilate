@@ -11,7 +11,7 @@ use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 #[Route('/cours')]  
 
@@ -29,7 +29,9 @@ class CoursController extends AbstractController
     #[Route('/calendar', name: 'app_cours_calendar')]
     public function calendar(CoursRepository $coursRepository): Response
     {
-        $isProfesseur = $this->isGranted('ROLE_ADMIN_APPLI');
+     
+        
+      
         $events = $coursRepository->findAll();
         $lescours= [] ;
         foreach($events as $event) {
@@ -37,7 +39,6 @@ class CoursController extends AbstractController
                 'id' => $event->getId(),
                 'title' => $event->getTitle(),
                 'start' => $event->getStart()->format('Y-m-d H:i:s'),
-                'end' => $event->getEnd()->format('Y-m-d H:i:s'),
                 'description' => $event->getDescription(),
                 'placesDispo' => $event->getPlacesDispo(),
                 'backgroundColor' => $event->getBackgroundColor(),
@@ -47,7 +48,7 @@ class CoursController extends AbstractController
         $data = json_encode($lescours);
         return $this->render('cours/calendar.html.twig',[
             'data' => $data,
-            'isProfesseur' => $isProfesseur,
+           
         ]);
     }
 
@@ -59,6 +60,7 @@ class CoursController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+           
             $entityManager->persist($cour);
             $entityManager->flush();
             $this->addFlash(
