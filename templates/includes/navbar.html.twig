@@ -30,12 +30,13 @@
            
           </a>
         </li> 
-     
+     {% if app.user is not empty %}
         <li class="nav-item">
           <a class="nav-link " href="{{ path('app_reservation_index') }}">Mes réservations
             
           </a>
         </li>
+        {% endif %}
   {% if app.user is not empty and is_granted('ROLE_ADMIN_APPLI')%}
           <li class="nav-item">
           <a class="nav-link" href="{{ path('app_user_index') }}">Les utilisateurs</a>

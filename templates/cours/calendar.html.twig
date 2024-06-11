@@ -7,11 +7,11 @@
     <div id="calendar-holder"></div>
     <style>
        .passed {
-            opacity: 0.5; /* Par exemple, réduire l'opacité pour les événements passés */
+            opacity: 0.5; 
            text-decoration: line-through;
         }
         .disable-link {
-            pointer-events: none; /* Désactiver les liens pour les événements passés */
+            pointer-events: none; 
             cursor: default;
         }</style>
 {% endblock %}
@@ -25,7 +25,7 @@
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 editable: false,
-                events: {{ data|raw }}, // Utilisez les données des événements fournies par Symfony
+                events: {{ data|raw }},
                 locale: 'fr',
                 headerToolbar: {
                     start: 'prev,next today',
@@ -34,12 +34,14 @@
                 },
   eventClick: function(info) {
     var currentDate = new Date();
-    if (info.event.start < currentDate) {
-        // Si la date de début de l'événement est antérieure à la date actuelle, empêchez l'action par défaut
+             var placesDispo = info.event.extendedProps.placesDispo;
+
+    if (info.event.start < currentDate || placesDispo === 0) {
+        // Si la date de début de l'événement est antérieure à la date actuelle, empêchez la résa par défaut
+        // même chose dans le cas ou le nb de résa est strictement = à 0
         return false;
     } 
 
-  
 
 
             
@@ -52,12 +54,18 @@
                 },
                    eventDidMount: function(info) {
             var currentDate = new Date();
-            if (info.event.start < currentDate) {
+                     var placesDispo = info.event.extendedProps.placesDispo;
+
+            if (info.event.start < currentDate || placesDispo === 0) {
                 info.el.classList.add('passed');
+                info.el.classList.add('disable-link');
                
             }
         }
+      
+
             });
+
 
             calendar.render();
         });

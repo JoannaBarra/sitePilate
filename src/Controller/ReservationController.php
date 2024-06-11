@@ -33,7 +33,7 @@ class ReservationController extends AbstractController
     public function index(ReservationRepository $reservationRepository): Response
     {   // Le  token me permet de verifier l'état de l'authentification et le rôle de l'user
         // ça rajoute une sécurité. Il permet de stocker et de fournir le token de sécurité de l'user
-        //Le jeton de sécurité contient les identifiants et les rôles de de l'user.
+        //Le jeton de sécurité contient les identifiants et les rôles de l'user.
         $user = $this->tokenStorage->getToken()->getUser();
 
         //Je veux retourner uniquement les reservations de l'user connecté
@@ -71,13 +71,15 @@ class ReservationController extends AbstractController
                 $form->handleRequest($request);
     
                 if ($form->isSubmitted() && $form->isValid()) {
-                    // if($cours->getStart() < )
                     //Je décrémente le nb de cours dans ma db.
                     if ($cours->getPlacesDispo() > 0 ) {
                         $cours->setPlacesDispo($cours->getPlacesDispo() - 1);
                         $entityManager->persist($reservation);
                         $entityManager->flush();
-
+                        $this->addFlash(
+                            'success',
+                            'Réservation enregistré!'
+                        );
                         if ($cours->getPlacesDispo() === 1) {
                         $this->addFlash('error', 'Il reste une place!');
                     }
@@ -89,10 +91,14 @@ class ReservationController extends AbstractController
                     }
                 }
 
-                return $this->render('reservation/new.html.twig', [
+                return 
+                $this->render('reservation/new.html.twig', [
                     'form' => $form->createView(),
                     'coursId' => $coursId,
+                    
+                    
                 ]);
+                
             
     
             
